@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.779
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "movieGEN", "movieGEN\movieGEN.csproj", "{6531B6D0-7BF3-4D26-A3F6-4C64563388FB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6531B6D0-7BF3-4D26-A3F6-4C64563388FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6531B6D0-7BF3-4D26-A3F6-4C64563388FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6531B6D0-7BF3-4D26-A3F6-4C64563388FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6531B6D0-7BF3-4D26-A3F6-4C64563388FB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0DA3CC95-8408-4DFA-A2F3-2B03320E3772}
+	EndGlobalSection
+EndGlobal
