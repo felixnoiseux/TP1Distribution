@@ -39,9 +39,11 @@ namespace movieGEN.Controllers
                             s1[i1] = json[i];
                             i1++;
                         }
-                        if (json[json.Length-42] == ']')
+                        string sFinjson = json.Substring(json.Length - 50, 50);
+                        int posArrayFin = json.Length - 50 + sFinjson.IndexOf("]");
+                        if (json[posArrayFin+1] == ',')
                         {
-                            string s = json.Substring(10, json.Length - 51);
+                            string s = json.Substring(10, posArrayFin - 9);
                             var jsonArray = JArray.Parse(s);
                             lstObj = jsonArray.ToObject<List<ImdbEntity>>();
                             ViewData["NextPage"] = page + 1;
@@ -98,10 +100,8 @@ namespace movieGEN.Controllers
                 "http://www.omdbapi.com/?apikey=c8f45984&t=Marvel&page=1",
                 "http://www.omdbapi.com/?apikey=c8f45984&t=iron&page=1",
                 "http://www.omdbapi.com/?apikey=c8f45984&t=Sword%20Art%20Online&page=1",
-                "http://www.omdbapi.com/?apikey=c8f45984&t=Star%20Wars%207&page=1",
                 "http://www.omdbapi.com/?apikey=c8f45984&t=The%20Fugitive&page=1",
                 "http://www.omdbapi.com/?apikey=c8f45984&t=Fast%20&%20Furious%206&page=1",
-                "http://www.omdbapi.com/?apikey=c8f45984&t=BlackList&page=1",
                 "http://www.omdbapi.com/?apikey=c8f45984&t=Blindspot&page=1",
                 "http://www.omdbapi.com/?apikey=c8f45984&t=Home%20Alone&page=1",
                 "http://www.omdbapi.com/?apikey=c8f45984&t=Bourne&page=1"
