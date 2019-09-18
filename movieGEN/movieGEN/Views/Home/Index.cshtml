@@ -24,23 +24,22 @@
 {
     @for (int i = 0; i < 2; i++)
     {
-        <div class="container row col-md-12" id="FilmIndex">
+        <div class="card-deck">
+            @*<div class="container row col-md-12" id="FilmIndex">*@
             @for (int i1 = 0; i1 < 4; i1++)
             {
                 if (@col1[((i * 4) + i1)] != null)
                 {
-                    <div class="col-md-3">
-                        <div class="col-md-12">
-                            <img class="col-md-6 img-fluid" style="" src="@col1[((i * 4) + i1)].Poster" alt="@col1[((i * 4) + i1)].Title" />
-                        </div>
-                        <br>
-                        <div class="col-md-12">
-                            <p class="rounded float-left">@col1[((i * 4) + i1)].Title</p>
+                    <div class="card">
+                        <img class="col-md-6 img-fluid" style="margin-left : auto; margin-right : auto;" src="@col1[((i * 4) + i1)].Poster" alt="Card image cap">
+                        <div class="card-footer" style="margin-top : 4px">
+                            <p class="card-text">@col1[((i * 4) + i1)].Title</p>
                             <form method="post">
                                 <button class="rounded float-right" asp-action="Details" asp-route-imdbID="@col1[((i * 4) + i1)].imdbID">Détails</button>
                             </form>
                         </div>
                     </div>
+                    <br><br>
                 }
             }
         </div>
