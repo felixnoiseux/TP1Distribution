@@ -13,28 +13,57 @@ namespace movieGEN.Controllers
 
     public class HomeController : Controller
     {
+        List<ImdbEntity> lstObj = new List<ImdbEntity>();
         // GET: Home
         [Route("Home/Index")]
-        public IActionResult Index(string recherche = "", int page = 1)
+        public IActionResult Index(string search = "", int page = 1)
         {
             ImdbEntity obj = new ImdbEntity();
-            List<ImdbEntity> lstObj = new List<ImdbEntity>();
-            if (recherche == "")
+
+            if (search == "")
             {
                 lstObj = Recherche();
             }
             else
             {
-                string url = "http://www.omdbapi.com/?apikey=c8f45984&s=" + recherche + "&page=" + page;
+                string url = "http://www.omdbapi.com/?apikey=c8f45984&s=" + search + "&page=" + page;
                 using (WebClient wc = new WebClient())
                 {
                     var json = wc.DownloadString(url);
-
-                    foreach (var item in json)
+                    if (json != "{\"Response\":\"False\",\"Error\":\"Movie not found!\"}")
                     {
-                        obj = Newtonsoft.Json.JsonConvert.DeserializeObject<ImdbEntity>(item.ToString());
-                        lstObj.Add(obj);
+                        char[] s1 = new char[100];
+                        int i1 = 0;
+                        for (int i = json.Length-1; i > json.Length - 50; i--)
+                        {
+                            s1[i1] = json[i];
+                            i1++;
+                        }
+                        if (json[json.Length-42] == ']')
+                        {
+                            string s = json.Substring(10, json.Length - 51);
+                            var jsonArray = JArray.Parse(s);
+                            lstObj = jsonArray.ToObject<List<ImdbEntity>>();
+                            ViewData["NextPage"] = page + 1;
+                            if (page != 1)
+                            {
+                                ViewData["PreviousPage"] = page - 1;
+                            }
+                        }
+                        else
+                        {
+                            string s = json.Substring(10, json.Length - 50);
+                            var jsonArray = JArray.Parse(s);
+                            lstObj = jsonArray.ToObject<List<ImdbEntity>>();
+                            if (page != 1)
+                            {
+                                ViewData["PreviousPage"] = page - 1;
+                            }
+                        }
+                        ViewData["ActualPage"] = page;
+                        ViewData["search"] = search;
                     }
+
                 }
 
             }
@@ -46,6 +75,18 @@ namespace movieGEN.Controllers
         public IActionResult About()
         {
             return View();
+        }
+        public IActionResult Details(string imdbID)
+        {
+            ImdbEntity imdb = new ImdbEntity();
+            string url = "http://www.omdbapi.com/?apikey=c8f45984&i=" + imdbID;
+            using (WebClient wc = new WebClient())
+            {
+                var json = wc.DownloadString(url);
+
+                imdb = Newtonsoft.Json.JsonConvert.DeserializeObject<ImdbEntity>(json);
+            }
+            return View(imdb);
         }
         public List<ImdbEntity> Recherche()
         {
