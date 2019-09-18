@@ -7,16 +7,17 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <link href="~/lib/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
+    <nav class="navbar navbar-inverse navbar-fixed-top" style="background-color : whitesmoke ; border-bottom :5px solid gray">
         <div class="navbar-header col-md-12">
             <button class="rounded float-left" onclick="location.href='@Url.Action("index","Home")'">Gestionnaire de Films</button>
             <a class="rounded float-right" asp-controller="Home" asp-action="About">About</a>
         </div>
     </nav>
 
-    <div class="body-content">
+    <div class="">
         @RenderBody()
     </div>
     <div id="footer" class="footer col-md-10">
