@@ -3,17 +3,16 @@
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ImdbEntity[] col1 = new ImdbEntity[8];
+    ImdbEntity[] col1 = new ImdbEntity[12];
     int pos = 0;
     foreach (var item in Model)
     {
-        if (pos <= 7)
+        if (pos <= 9)
         {
             col1[pos] = item;
             pos++;
         }
     }
-    //col1 = Model.Take(8).ToArray();
 
 }
 <form class="col-md-12" method="get" action="@Url.Action("Index", "Home")" style="margin-top: 10px">
@@ -22,7 +21,7 @@
 </form>
 @if (Model.Count != 0)
 {
-    @for (int i = 0; i < 2; i++)
+    @for (int i = 0; i < 3; i++)
     {
         <div class="card-deck">
             @*<div class="container row col-md-12" id="FilmIndex">*@
@@ -30,7 +29,7 @@
             {
                 if (@col1[((i * 4) + i1)] != null)
                 {
-                    <div class="card">
+                    <div class="card col-md-3">
                         <img class="col-md-6 img-fluid" style="margin-left : auto; margin-right : auto;" src="@col1[((i * 4) + i1)].Poster" alt="Card image cap">
                         <div class="card-footer" style="margin-top : 4px">
                             <p class="card-text">@col1[((i * 4) + i1)].Title</p>
@@ -64,7 +63,7 @@
 else
 {
     <div class="col-md-12" style="text-align:center">
-        <h1>Aucun résultat</h1>
+        <h1>Aucun ou trop de résultat</h1>
     </div>
 }
 <script>
