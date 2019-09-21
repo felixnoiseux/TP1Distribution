@@ -8,12 +8,14 @@
     <link rel="stylesheet" href="~/css/site.css" />
     <link href="~/lib/font-awesome/css/font-awesome.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Lobster&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/2c7a96cf2f.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <nav class="navbar navbar-inverse navbar-fixed-top" style="background-color : whitesmoke ; border-bottom :5px solid gray">
         <div class="navbar-header col-md-12">
             <button class="rounded float-left" onclick="location.href='@Url.Action("index","Home")'">Gestionnaire de Films</button>
-            <a class="rounded float-right" asp-controller="Home" asp-action="About">About</a>
+            <a class="rounded float-right" asp-controller="Home" asp-action="About">À propos</a>
         </div>
     </nav>
 
@@ -25,11 +27,6 @@
             &copy; 2019 - movieGEN.
         </footer>
     </div>
-    @*<div id="footer2" class="footer col-md-2">
-            <footer>
-                <email display="Contacter l'équipe technique" domain="cegepsth.qc.ca" prefix="bonjour"></email>
-            </footer>
-        </div>*@
 
     @RenderSection("Scripts", required: false)
 </body>

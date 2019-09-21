@@ -11,7 +11,6 @@
 <div class="w-100 p-3" style="height : 200px">
     <img src="@Html.DisplayFor(model => model.Poster)" style="width : 120% ; height : 100%; object-fit : cover ; margin-left : -10%; margin-top : -2%" />
 </div>
-<br><br>
 <div class="container">
     <div class="row">
         <div class="col-sm-3">
@@ -19,11 +18,13 @@
         </div>
         <div class="col-sm-9">
             <h2><b>@Html.DisplayFor(model => model.Title)</b></h2>
-            <p><i class="fas fa-star"></i>@Html.DisplayFor(model => model.imdbRating)</p>
-            <button type="button" class="btn btn-light">Light</button>
-            <button type="button" class="btn btn-light">Light</button>
+            <p><i class="fas fa-star"></i>&nbsp;  @Html.DisplayFor(model => model.imdbRating)</p>
+            <button type="button" class="btn btn-light"><b>ACHETER SUR EBAY</b> <i class="fab fa-ebay"></i></button>
+            &nbsp;
+            <button type="button" class="btn btn-light"><b>VOIR LA BANDE ANNONCE</b> <i class="fab fa-youtube"></i></button>
         </div>
     </div>
+    <br>
     <div class="row">
         <div class="col-sm-12">
             <h2 style="text-align : left">Résumé</h2>
@@ -36,7 +37,7 @@
             <p>@Html.DisplayFor(model => model.Actors)</p>
         </div>
         <div class="col-sm-6">
-            <h2 style="text-align : left">Equipe</h2>
+            <h2 style="text-align : left">Équipe</h2>
             <p>@Html.DisplayFor(model => model.Writer)</p>
             <p> @Html.DisplayFor(model => model.Director) </p>
         </div>
@@ -44,5 +45,5 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Retour</a>
 </div>
