@@ -40,6 +40,9 @@ namespace movieGEN
             {
                 app.UseHsts();
             }
+            string s = env.ContentRootPath;
+            string credential_path = s+ "\\moviegen-3d5027810646.json";
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", credential_path);
             app.UseStaticFiles();
             app.UseHttpsRedirection();
             app.UseMvc(routes =>

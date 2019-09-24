@@ -1,4 +1,9 @@
 ﻿<!DOCTYPE html>
+@{ 
+    string targetLanguage = "eng";
+    string sourceLanguage = null; // automatically detected
+    var client = Google.Cloud.Translation.V2.TranslationClient.Create();
+}
 <html>
 <head>
     <meta charset="utf-8" />
@@ -10,12 +15,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://fonts.googleapis.com/css?family=Lobster&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/2c7a96cf2f.js" crossorigin="anonymous"></script>
+
 </head>
 <body>
     <nav class="navbar navbar-inverse navbar-fixed-top" style="background-color : whitesmoke ; border-bottom :5px solid gray">
         <div class="navbar-header col-md-12">
-            <button class="rounded float-left" onclick="location.href='@Url.Action("index","Home")'">Gestionnaire de Films</button>
-            <a class="rounded float-right" asp-controller="Home" asp-action="About">À propos</a>
+            <button class="rounded float-left" onclick="location.href='@Url.Action("index","Home")'">@System.Web.HttpUtility.HtmlDecode(client.TranslateHtml("Gestionnaire de Films", targetLanguage, sourceLanguage).TranslatedText)</button>
+            <a class="rounded float-right" asp-controller="Home" asp-action="About">@System.Web.HttpUtility.HtmlDecode(client.TranslateHtml("À propos", targetLanguage, sourceLanguage).TranslatedText)</a>
         </div>
     </nav>
 

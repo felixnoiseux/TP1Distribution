@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using Google.Apis.Services;
+using Google.Apis.YouTube.v3;
 using Microsoft.AspNetCore.Mvc;
 using movieGEN.Models;
 using Newtonsoft.Json.Linq;
-
 namespace movieGEN.Controllers
 {
 
@@ -19,7 +19,13 @@ namespace movieGEN.Controllers
         public IActionResult Index(string search = "", int page = 1)
         {
             ImdbEntity obj = new ImdbEntity();
-
+            if (search != "")
+            {
+                while (search[search.Length - 1] == ' ')
+                {
+                    search = search.Substring(0, search.Length - 1);
+                }
+            }
             if (search == "")
             {
                 lstObj = Recherche();
@@ -32,13 +38,6 @@ namespace movieGEN.Controllers
                     var json = wc.DownloadString(url);
                     if (json != "{\"Response\":\"False\",\"Error\":\"Movie not found!\"}" && json != "{\"Response\":\"False\",\"Error\":\"Too many results.\"}")
                     {
-                        //char[] s1 = new char[100];
-                        //int i1 = 0;
-                        //for (int i = json.Length-1; i > json.Length - 50; i--)
-                        //{
-                        //    s1[i1] = json[i];
-                        //    i1++;
-                        //}
                         int NbResultat = 0;
                         if (Int32.TryParse(json.Substring(json.Length - 24, 4), out int x))
                         {
@@ -97,13 +96,17 @@ namespace movieGEN.Controllers
                 }
 
             }
-
             return View(lstObj);
 
 
         }
         public IActionResult About()
         {
+            return View();
+        }
+        public IActionResult ListEbay(string Title = "avenger")
+        {
+            ViewData["Film"] = Title;
             return View();
         }
         public IActionResult Details(string imdbID)
@@ -116,7 +119,50 @@ namespace movieGEN.Controllers
 
                 imdb = Newtonsoft.Json.JsonConvert.DeserializeObject<ImdbEntity>(json);
             }
+            try
+            {
+                Run(imdb).Wait();
+            }
+            catch (AggregateException ex)
+            {
+                foreach (var e in ex.InnerExceptions)
+                {
+                    Console.WriteLine("Error: " + e.Message);
+                }
+            }
+
             return View(imdb);
+        }
+        private async Task Run(ImdbEntity imdb)
+        {
+            var youtubeService = new YouTubeService(new BaseClientService.Initializer()
+            {
+                ApiKey = "AIzaSyDbb9kUcOZUNxY-h5mgZjnOinkNbH5YYxo",
+                ApplicationName = this.GetType().ToString()
+            });
+            //https://www.youtube.com/watch?v=
+            var searchListRequest = youtubeService.Search.List("snippet");
+            searchListRequest.Q = imdb.Title + " Official trailer"; // Replace with your search term.
+            searchListRequest.MaxResults = 1;
+
+            // Call the search.list method to retrieve results matching the specified query term.
+            var searchListResponse = await searchListRequest.ExecuteAsync();
+
+            List<string> videos = new List<string>();
+
+            // Add each result to the appropriate list, and then display the lists of
+            // matching videos, channels, and playlists.
+            foreach (var searchResult in searchListResponse.Items)
+            {
+                switch (searchResult.Id.Kind)
+                {
+                    case "youtube#video":
+                        videos.Add(String.Format(searchResult.Id.VideoId));
+                        break;
+                }
+            }
+            ViewData["URLYoutube"] = "https://www.youtube.com/watch?v=" + videos.FirstOrDefault();
+
         }
         public List<ImdbEntity> Recherche()
         {

@@ -14,10 +14,15 @@
         }
     }
 
+    string targetLanguage = "eng";
+    string sourceLanguage = null; // automatically detected
+    var client = Google.Cloud.Translation.V2.TranslationClient.Create();
+
+
 }
 <form class="col-md-12" method="get" action="@Url.Action("Index", "Home")" style="margin-top: 10px">
-    <input class="col-md-12" type="text" name="search" id="search" placeholder="Rechercher : " />
-    <button style="visibility:hidden" type="submit" id="searchButton">Rechercher</button>
+    <input class="col-md-12" type="text" name="search" id="search" placeholder="@System.Web.HttpUtility.HtmlDecode(@client.TranslateHtml("Rechercher : ", targetLanguage, sourceLanguage).TranslatedText)" />
+    <button style="visibility:hidden" type="submit" id="searchButton">@System.Web.HttpUtility.HtmlDecode(@client.TranslateHtml("Rechercher", targetLanguage, sourceLanguage).TranslatedText)</button>
 </form>
 @if (Model.Count != 0)
 {
@@ -32,9 +37,9 @@
                     <div class="card col-md-3">
                         <img class="col-md-6 img-fluid" style="margin-left : auto; margin-right : auto;" src="@col1[((i * 4) + i1)].Poster" alt="Card image cap">
                         <div class="card-footer" style="margin-top : 4px">
-                            <p class="card-text">@col1[((i * 4) + i1)].Title</p>
+                            <p class="card-text"><span class="notranslate">@System.Web.HttpUtility.HtmlDecode(@client.TranslateHtml(@col1[((i * 4) + i1)].Title, targetLanguage, sourceLanguage).TranslatedText)</span></p>
                             <form method="post">
-                                <button class="rounded float-right" asp-action="Details" asp-route-imdbID="@col1[((i * 4) + i1)].imdbID">Détails</button>
+                                <button class="rounded float-right" asp-action="Details" asp-route-imdbID="@col1[((i * 4) + i1)].imdbID">@System.Web.HttpUtility.HtmlDecode(@client.TranslateHtml("Détails", targetLanguage, sourceLanguage).TranslatedText)</button>
                             </form>
                         </div>
                     </div>
@@ -47,14 +52,14 @@
         @if (ViewData["PreviousPage"] != null)
         {
             <a asp-controller="Home" asp-action="Index" asp-route-search=@ViewData["search"] asp-route-page=@ViewData["PreviousPage"]>
-                Précédent
+                @System.Web.HttpUtility.HtmlDecode(client.TranslateHtml("Précédent", targetLanguage, sourceLanguage).TranslatedText)
             </a>
         }
         <p>@ViewData["ActualPage"]</p>
         @if (ViewData["NextPage"] != null)
         {
             <a asp-controller="Home" asp-action="Index" asp-route-search=@ViewData["search"] asp-route-page=@ViewData["NextPage"]>
-                Suivant
+                @System.Web.HttpUtility.HtmlDecode(client.TranslateHtml("Suivant", targetLanguage, sourceLanguage).TranslatedText)
             </a>
         }
     </div>

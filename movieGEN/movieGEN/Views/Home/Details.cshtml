@@ -3,7 +3,9 @@
 @{
     ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
-
+    string targetLanguage = "eng";
+    string sourceLanguage = null; // automatically detected
+    var client = Google.Cloud.Translation.V2.TranslationClient.Create();
 }
 <script>
     var imgUrl = '@Model.Poster';
@@ -17,33 +19,33 @@
             <img src="@Html.DisplayFor(model => model.Poster)" class="img-thumbnail" />
         </div>
         <div class="col-sm-9">
-            <h2><b>@Html.DisplayFor(model => model.Title)</b></h2>
+            <h2><b>@System.Web.HttpUtility.HtmlDecode(client.TranslateHtml(Model.Title, targetLanguage, sourceLanguage).TranslatedText)</b></h2>
             <p><i class="fas fa-star"></i>&nbsp;  @Html.DisplayFor(model => model.imdbRating)</p>
-            <button type="button" class="btn btn-light"><b>ACHETER SUR EBAY</b> <i class="fab fa-ebay"></i></button>
+            <button type="button" class="btn btn-light"><a style="color:black" asp-action="ListEbay" asp-route-Title="@Model.Title"><b>@System.Web.HttpUtility.HtmlDecode(client.TranslateHtml("ACHETER SUR EBAY", targetLanguage, sourceLanguage).TranslatedText)</b> </a><i class="fab fa-ebay"></i></button>
             &nbsp;
-            <button type="button" class="btn btn-light"><b>VOIR LA BANDE ANNONCE</b> <i class="fab fa-youtube"></i></button>
+            <button type="button" class="btn btn-light"><a style="color:black" href="@ViewData["URLYoutube"]" target="_blank"><b>@System.Web.HttpUtility.HtmlDecode(client.TranslateHtml("VOIR LA BANDE ANNONCE", targetLanguage, sourceLanguage).TranslatedText)</b></a> <i class="fab fa-youtube"></i></button>
         </div>
     </div>
     <br>
     <div class="row">
         <div class="col-sm-12">
-            <h2 style="text-align : left">Résumé</h2>
-            <p>@Html.DisplayFor(model => model.Plot)</p>
+            <h2 style="text-align : left">@System.Web.HttpUtility.HtmlDecode(client.TranslateHtml("Résumé", targetLanguage, sourceLanguage).TranslatedText)</h2>
+            <p>@System.Web.HttpUtility.HtmlDecode(client.TranslateHtml(Model.Plot, targetLanguage, sourceLanguage).TranslatedText)</p>
         </div>
     </div>
     <div class="row">
         <div class="col-sm-6">
             <h2 style="text-align : left">Casting</h2>
-            <p>@Html.DisplayFor(model => model.Actors)</p>
+            <p>@System.Web.HttpUtility.HtmlDecode(client.TranslateHtml(Model.Actors, targetLanguage, sourceLanguage).TranslatedText)</p>
         </div>
         <div class="col-sm-6">
-            <h2 style="text-align : left">Équipe</h2>
-            <p>@Html.DisplayFor(model => model.Writer)</p>
-            <p> @Html.DisplayFor(model => model.Director) </p>
+            <h2 style="text-align : left">@System.Web.HttpUtility.HtmlDecode(client.TranslateHtml("Équipe", targetLanguage, sourceLanguage).TranslatedText)</h2>
+            <p>@System.Web.HttpUtility.HtmlDecode(client.TranslateHtml(Model.Writer, targetLanguage, sourceLanguage).TranslatedText)</p>
+            <p>@System.Web.HttpUtility.HtmlDecode(client.TranslateHtml(Model.Director, targetLanguage, sourceLanguage).TranslatedText)</p>
         </div>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Retour</a>
+    <a asp-action="Index">@System.Web.HttpUtility.HtmlDecode(client.TranslateHtml("Retour", targetLanguage, sourceLanguage).TranslatedText)</a>
 </div>
