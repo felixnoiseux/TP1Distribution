@@ -5,14 +5,19 @@ using System.Net;
 using System.Threading.Tasks;
 using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using movieGEN.Models;
 using Newtonsoft.Json.Linq;
+using System.ServiceModel.Channels;
+using System.ServiceModel;
+
+
 namespace movieGEN.Controllers
 {
-
     public class HomeController : Controller
     {
+
         List<ImdbEntity> lstObj = new List<ImdbEntity>();
         // GET: Home
         [Route("Home/Index")]
@@ -106,7 +111,70 @@ namespace movieGEN.Controllers
         }
         public IActionResult ListEbay(string Title = "avenger")
         {
-            ViewData["Film"] = Title;
+            bool pay = false;
+            Title = Title.Replace("&", "%26");
+            List<Ebay> ebays = new List<Ebay>();
+            string url = "https://svcs.ebay.com/services/search/FindingService/v1";
+            url += "?OPERATION-NAME=findItemsByKeywords";
+            url += "&SERVICE-VERSION=1.0.0";
+            url += "&SECURITY-APPNAME=SamuelDe-movieGEN-PRD-9dfe51816-c0152236";
+            url += "&GLOBAL-ID=EBAY-US";
+            url += "&RESPONSE-DATA-FORMAT=JSON";
+            url += "&REST-PAYLOAD";
+            url += "&keywords=" + Title;
+            url += "&paginationInput.entriesPerPage=10";
+            using (WebClient wc = new WebClient())
+            {
+                var json = wc.DownloadString(url);
+                if (!json.Contains("totalEntries\":[\"0\"]"))//fonctionne
+                {
+                    //occurence,pos
+                    Dictionary<int, int> occurenceDebut = new Dictionary<int, int>();
+                    Dictionary<int, int> occurenceFin = new Dictionary<int, int>();
+                    int occurencedebutCount = 0;
+                    int occurenceFinCount = 0;
+
+                    for (int i = 0; i < json.Length - 1; i++)
+                    {
+                        if (json[i] == '[')//6
+                        {
+                            occurencedebutCount++;
+                            occurenceDebut.Add(occurencedebutCount, i);
+                        }
+                        else if (json[i] == ']')//max - 9
+                        {
+                            occurenceFinCount++;
+                            occurenceFin.Add(occurenceFinCount, i);
+                        }
+                    }
+                    string s = json.Substring(occurenceDebut.Where(p => p.Key == 6).Select(u => u.Value).FirstOrDefault(), (occurenceFin.Where(p => p.Key == occurenceFin.Count - 8).Select(u => u.Value).FirstOrDefault()) - (occurenceDebut.Where(p => p.Key == 6).Select(u => u.Value).FirstOrDefault() - 1));
+                    s = s.Replace("[", "");
+                    s = s.Replace("]", "");
+                    string final = "[" + s + "]";
+                    for (int i = 0; i < final.Length - 13; i++)
+                    {
+                        if (final.Substring(i, 13) == "paymentMethod")//"paymentMethod
+                        {
+                            final = final.Insert(i + 15, "[");
+                            i += 3;
+                            pay = true;
+                        }
+                        if (final.Substring(i, 7) == "autoPay")//autoPay
+                        {
+                            if (pay == true)
+                            {
+                                final = final.Insert(i - 2, "]");
+                                i += 3;
+                                pay = false;
+                            }
+                        }
+                    }
+                    var jsonArray = JArray.Parse(final);
+
+                    ebays = jsonArray.ToObject<List<Ebay>>();
+                    return View(ebays);
+                }
+            }
             return View();
         }
         public IActionResult Details(string imdbID)

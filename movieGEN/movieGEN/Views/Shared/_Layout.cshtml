@@ -1,6 +1,6 @@
 ﻿<!DOCTYPE html>
 @{ 
-    string targetLanguage = "eng";
+    string targetLanguage = "fr";
     string sourceLanguage = null; // automatically detected
     var client = Google.Cloud.Translation.V2.TranslationClient.Create();
 }
@@ -11,7 +11,7 @@
     <title>@ViewData["Title"] - movieGEN</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="~/css/site.css" />
-    <link href="~/lib/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    @*<link href="~/lib/font-awesome/css/font-awesome.css" rel="stylesheet" />*@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://fonts.googleapis.com/css?family=Lobster&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/2c7a96cf2f.js" crossorigin="anonymous"></script>

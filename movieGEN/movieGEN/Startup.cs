@@ -15,17 +15,19 @@ namespace movieGEN
 {
     public class Startup
     {
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
-
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -38,13 +40,15 @@ namespace movieGEN
             }
             else
             {
+
                 app.UseHsts();
             }
             string s = env.ContentRootPath;
-            string credential_path = s+ "\\moviegen-3d5027810646.json";
+            string credential_path = s + "\\moviegen-3d5027810646.json";
             Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", credential_path);
             app.UseStaticFiles();
             app.UseHttpsRedirection();
+            
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
