@@ -11,99 +11,87 @@ using movieGEN.Models;
 using Newtonsoft.Json.Linq;
 using System.ServiceModel.Channels;
 using System.ServiceModel;
-
+using javax.jws;
 
 namespace movieGEN.Controllers
 {
     public class HomeController : Controller
     {
-
-        List<ImdbEntity> lstObj = new List<ImdbEntity>();
+        private List<ImdbEntity> lstObj = new List<ImdbEntity>();
         // GET: Home
         [Route("Home/Index")]
         public IActionResult Index(string search = "", int page = 1)
         {
-            ImdbEntity obj = new ImdbEntity();
             if (search != "")
             {
-                while (search[search.Length - 1] == ' ')
+                while (search[search.Length - 1] == ' ') //Si il y a des espaces en trop dans la recherche, les enlèves
                 {
                     search = search.Substring(0, search.Length - 1);
                 }
             }
+
             if (search == "")
             {
                 lstObj = Recherche();
             }
             else
             {
-                string url = "http://www.omdbapi.com/?apikey=c8f45984&s=" + search + "&page=" + page;
+                string url = "http://www.omdbapi.com/?apikey=c8f45984&s=" + search + "&page=" + page; 
                 using (WebClient wc = new WebClient())
                 {
-                    var json = wc.DownloadString(url);
+                    var json = wc.DownloadString(url); //Télécharge le Json retourné par la recherche
                     if (json != "{\"Response\":\"False\",\"Error\":\"Movie not found!\"}" && json != "{\"Response\":\"False\",\"Error\":\"Too many results.\"}")
                     {
+                        //Recherche le Nombre total de résultat
                         int NbResultat = 0;
                         if (Int32.TryParse(json.Substring(json.Length - 24, 4), out int x))
-                        {
                             NbResultat = x;
-
-                        }
                         else if (Int32.TryParse(json.Substring(json.Length - 23, 3), out int y))
-                        {
                             NbResultat = y;
-                        }
                         else if (Int32.TryParse(json.Substring(json.Length - 22, 2), out int z))
-                        {
                             NbResultat = z;
-                        }
                         else if (Int32.TryParse(json.Substring(json.Length - 21, 1), out int z1))
-                        {
                             NbResultat = z1;
-                        }
+                        
                         string sFinjson = json.Substring(json.Length - 50, 50);
                         float nb = NbResultat / 10.0f;
                         int NPage = NbResultat / 10;
-                        if (nb % 1 != 0)
-                        {
+                        if (nb % 1 != 0) //Ajoute une page si le résultat n'est pas 0 exacte, en int il arrondi
                             NPage++;
-                        }
 
-                        int posArrayFin = json.Length - 50 + sFinjson.IndexOf("]");
+                        int posArrayFin = json.Length - 50 + sFinjson.IndexOf("]"); //Position de fin de l'array
                         if (json[posArrayFin + 1] == ',')
                         {
                             string s = json.Substring(10, posArrayFin - 9);
                             var jsonArray = JArray.Parse(s);
                             lstObj = jsonArray.ToObject<List<ImdbEntity>>();
                             if (page < NPage)
-                            {
-                                ViewData["NextPage"] = page + 1;
-                            }
+                                ViewData["NextPage"] = page + 1; //Envoie les données de la prochaine page
                             if (page != 1)
-                            {
-                                ViewData["PreviousPage"] = page - 1;
-                            }
+                                ViewData["PreviousPage"] = page - 1; //Envoie les données de la prochaine page
                         }
-                        else
+                        else //Il arrive qu'il n'y est pas de virgule si le résultat est trop petit
                         {
                             string s = json.Substring(10, json.Length - 50);
                             var jsonArray = JArray.Parse(s);
                             lstObj = jsonArray.ToObject<List<ImdbEntity>>();
                             if (page != 1)
-                            {
                                 ViewData["PreviousPage"] = page - 1;
-                            }
                         }
                         ViewData["ActualPage"] = page;
-                        ViewData["search"] = search;
+                        ViewData["search"] = search; //Envoie le mot clé de recherche (constance)
                     }
-
                 }
-
             }
             return View(lstObj);
 
 
+        }
+        [HttpPost]
+        public void ChangeLangage(string langage) 
+        {
+            Environment.SetEnvironmentVariable("TARGET_LANGUAGE", langage);
+            
         }
         public IActionResult About()
         {
@@ -126,9 +114,9 @@ namespace movieGEN.Controllers
             using (WebClient wc = new WebClient())
             {
                 var json = wc.DownloadString(url);
-                if (!json.Contains("totalEntries\":[\"0\"]"))//fonctionne
+                if (!json.Contains("totalEntries\":[\"0\"]"))//Si il y a des résultat
                 {
-                    //occurence,pos
+                    //occurence,pos des Braquette
                     Dictionary<int, int> occurenceDebut = new Dictionary<int, int>();
                     Dictionary<int, int> occurenceFin = new Dictionary<int, int>();
                     int occurencedebutCount = 0;
@@ -147,13 +135,14 @@ namespace movieGEN.Controllers
                             occurenceFin.Add(occurenceFinCount, i);
                         }
                     }
+                    //Vrai position de départ de l'array de donnée 6 et max-8
                     string s = json.Substring(occurenceDebut.Where(p => p.Key == 6).Select(u => u.Value).FirstOrDefault(), (occurenceFin.Where(p => p.Key == occurenceFin.Count - 8).Select(u => u.Value).FirstOrDefault()) - (occurenceDebut.Where(p => p.Key == 6).Select(u => u.Value).FirstOrDefault() - 1));
                     s = s.Replace("[", "");
                     s = s.Replace("]", "");
-                    string final = "[" + s + "]";
+                    string final = "[" + s + "]"; //Remet les braquettes pour la mise en array
                     for (int i = 0; i < final.Length - 13; i++)
                     {
-                        if (final.Substring(i, 13) == "paymentMethod")//"paymentMethod
+                        if (final.Substring(i, 13) == "paymentMethod")// paymentMethod Ajout des braquettes d'array 
                         {
                             final = final.Insert(i + 15, "[");
                             i += 3;
@@ -169,8 +158,7 @@ namespace movieGEN.Controllers
                             }
                         }
                     }
-                    var jsonArray = JArray.Parse(final);
-
+                    var jsonArray = JArray.Parse(final); //convertion
                     ebays = jsonArray.ToObject<List<Ebay>>();
                     return View(ebays);
                 }
@@ -184,7 +172,6 @@ namespace movieGEN.Controllers
             using (WebClient wc = new WebClient())
             {
                 var json = wc.DownloadString(url);
-
                 imdb = Newtonsoft.Json.JsonConvert.DeserializeObject<ImdbEntity>(json);
             }
             try
@@ -194,49 +181,41 @@ namespace movieGEN.Controllers
             catch (AggregateException ex)
             {
                 foreach (var e in ex.InnerExceptions)
-                {
                     Console.WriteLine("Error: " + e.Message);
-                }
             }
-
             return View(imdb);
         }
-        private async Task Run(ImdbEntity imdb)
+        private async Task Run(ImdbEntity imdb) //API de youtube en async
         {
             var youtubeService = new YouTubeService(new BaseClientService.Initializer()
             {
                 ApiKey = "AIzaSyDbb9kUcOZUNxY-h5mgZjnOinkNbH5YYxo",
                 ApplicationName = this.GetType().ToString()
             });
-            //https://www.youtube.com/watch?v=
             var searchListRequest = youtubeService.Search.List("snippet");
-            searchListRequest.Q = imdb.Title + " Official trailer"; // Replace with your search term.
-            searchListRequest.MaxResults = 1;
-
-            // Call the search.list method to retrieve results matching the specified query term.
+            searchListRequest.Q = imdb.Title + " Official trailer"; // Recherche par titre pour bande annonce
+            searchListRequest.MaxResults = 1; //S'assure d'avoir le résultat le plus pertinent
             var searchListResponse = await searchListRequest.ExecuteAsync();
-
             List<string> videos = new List<string>();
 
-            // Add each result to the appropriate list, and then display the lists of
-            // matching videos, channels, and playlists.
+            // Récupère les vidéos correspondantes
             foreach (var searchResult in searchListResponse.Items)
             {
                 switch (searchResult.Id.Kind)
                 {
                     case "youtube#video":
-                        videos.Add(String.Format(searchResult.Id.VideoId));
+                        videos.Add(String.Format(searchResult.Id.VideoId)); 
                         break;
                 }
             }
-            ViewData["URLYoutube"] = "https://www.youtube.com/watch?v=" + videos.FirstOrDefault();
+            ViewData["URLYoutube"] = "https://www.youtube.com/watch?v=" + videos.FirstOrDefault(); //Renvoie l'url de la vidéo
 
         }
         public List<ImdbEntity> Recherche()
         {
             List<ImdbEntity> listInit = new List<ImdbEntity>();
             ImdbEntity obj = new ImdbEntity();
-            List<string> URL = new List<string>()
+            List<string> URL = new List<string>() // Liste de film sur la page de départ par défaut
             {
                 "http://www.omdbapi.com/?apikey=c8f45984&t=captain&page=1",
                 "http://www.omdbapi.com/?apikey=c8f45984&t=Marvel&page=1",
@@ -255,11 +234,8 @@ namespace movieGEN.Controllers
                 using (WebClient wc = new WebClient())
                 {
                     var json = wc.DownloadString(url);
-
-
                     obj = Newtonsoft.Json.JsonConvert.DeserializeObject<ImdbEntity>(json);
                     listInit.Add(obj);
-
                 }
             }
             return listInit;

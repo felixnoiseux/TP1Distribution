@@ -2,6 +2,9 @@
 @{
     ViewData["Title"] = "about";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    string targetLanguage = Environment.GetEnvironmentVariable("TARGET_LANGUAGE");
+    string sourceLanguage = null; // automatically detected
+    var client = Google.Cloud.Translation.V2.TranslationClient.Create();
 }
 <style>
     #shadowBox {
@@ -42,11 +45,11 @@
     <br><br>
     <div class="row">
         <div class="col-sm-12" style="text-align : center">
-           <u> <h1 class="text-monospace">À propos de nous</h1></u>
+           <u> <h1 class="text-monospace">@System.Web.HttpUtility.HtmlDecode(@client.TranslateHtml("À propos de nous", targetLanguage, sourceLanguage).TranslatedText)</h1></u>
             <br>
             <h2 class="text-monospace">Felix Noiseux | Samuel Dextraze</h2>
-            <h2 class="text-monospace">Septembre 2019</h2>
-           <b><p class="text-monospace">Projet : </p></b>
+            <h2 class="text-monospace">@System.Web.HttpUtility.HtmlDecode(@client.TranslateHtml("Septembre 2019", targetLanguage, sourceLanguage).TranslatedText)</h2>
+           <b><p class="text-monospace">@System.Web.HttpUtility.HtmlDecode(@client.TranslateHtml("Projet :", targetLanguage, sourceLanguage).TranslatedText) </p></b>
         </div>
         <br><br>
         <div class="col-sm-12">

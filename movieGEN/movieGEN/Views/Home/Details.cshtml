@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    string targetLanguage = "fr";
+    string targetLanguage = Environment.GetEnvironmentVariable("TARGET_LANGUAGE");
     string sourceLanguage = null; // automatically detected
     var client = Google.Cloud.Translation.V2.TranslationClient.Create();
 }
@@ -11,12 +11,12 @@
     var imgUrl = '@Model.Poster';
 </script>
 <div class="w-100 p-3" style="height : 200px">
-    <img src="@Html.DisplayFor(model => model.Poster)" style="width : 120% ; height : 100%; object-fit : cover ; margin-left : -10%; margin-top : -2%" />
+    <img src="@Html.DisplayFor(model => model.Poster)" style="width : 120% ; height : 100%; object-fit : cover ; margin-left : -10%; margin-top : -2%" onerror="this.onerror=null;this.src='https://us.123rf.com/450wm/pavelstasevich/pavelstasevich1811/pavelstasevich181101065/112815953-stock-vector-no-image-available-icon-flat-vector.jpg?ver=6';"/>
 </div>
 <div class="container">
     <div class="row">
         <div class="col-sm-3">
-            <img src="@Html.DisplayFor(model => model.Poster)" class="img-thumbnail" />
+            <img src="@Html.DisplayFor(model => model.Poster)" class="img-thumbnail" onerror="this.onerror=null;this.src='https://us.123rf.com/450wm/pavelstasevich/pavelstasevich1811/pavelstasevich181101065/112815953-stock-vector-no-image-available-icon-flat-vector.jpg?ver=6';"/>
         </div>
         <div class="col-sm-9">
             <h2><b>@System.Web.HttpUtility.HtmlDecode(client.TranslateHtml(Model.Title, targetLanguage, sourceLanguage).TranslatedText)</b></h2>

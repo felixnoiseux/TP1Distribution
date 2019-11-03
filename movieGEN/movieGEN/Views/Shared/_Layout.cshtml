@@ -1,8 +1,11 @@
 ﻿<!DOCTYPE html>
-@{ 
-    string targetLanguage = "fr";
+@{
+    @using movieGEN.Controllers;
+    string targetLanguage = Environment.GetEnvironmentVariable("TARGET_LANGUAGE");
     string sourceLanguage = null; // automatically detected
     var client = Google.Cloud.Translation.V2.TranslationClient.Create();
+    var currentLanguage = client.ListLanguages(target: "fr").Where(l => l.Code == targetLanguage).Select(s => s.Name).FirstOrDefault();
+    var choseLangage = targetLanguage;
 }
 <html>
 <head>
@@ -15,13 +18,42 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://fonts.googleapis.com/css?family=Lobster&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/2c7a96cf2f.js" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <environment include="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
+                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery"
+                crossorigin="anonymous"
+                integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
+        </script>
+        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
+                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                crossorigin="anonymous"
+                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
+        </script>
+        <script src="~/js/site.min.js" asp-append-version="true"></script>
+    </environment>
 
 </head>
 <body>
     <nav class="navbar navbar-inverse navbar-fixed-top" style="background-color : whitesmoke ; border-bottom :5px solid gray">
         <div class="navbar-header col-md-12">
             <button class="rounded float-left" onclick="location.href='@Url.Action("index","Home")'">@System.Web.HttpUtility.HtmlDecode(client.TranslateHtml("Gestionnaire de Films", targetLanguage, sourceLanguage).TranslatedText)</button>
-            <a class="rounded float-right" asp-controller="Home" asp-action="About">@System.Web.HttpUtility.HtmlDecode(client.TranslateHtml("À propos", targetLanguage, sourceLanguage).TranslatedText)</a>
+
+            <a class="rounded float-right col-md-2" asp-controller="Home" asp-action="About">@System.Web.HttpUtility.HtmlDecode(client.TranslateHtml("À propos", targetLanguage, sourceLanguage).TranslatedText)</a>
+            <select id="lan" name="language" class="rounded float-right col-md-2 select" onchange="getval(this);">
+                <option value="" selected disabled hidden>@currentLanguage</option>
+                @foreach (var item in client.ListLanguages(target: targetLanguage))
+                {
+                    <option id="lan" value="@item.Code">@item.Name</option>
+                }
+            </select>
         </div>
     </nav>
 
@@ -36,4 +68,17 @@
 
     @RenderSection("Scripts", required: false)
 </body>
+
 </html>
+<script type="text/javascript">
+    function getval(sel) {
+        $.ajax({
+            url: '/Home/ChangeLangage',
+            type: "POST",
+            dataType: 'json',
+            data: { "langage": sel.value }
+        });
+        location.reload();
+    }
+
+</script>

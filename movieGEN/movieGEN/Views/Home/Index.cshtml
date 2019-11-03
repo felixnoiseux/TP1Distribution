@@ -14,7 +14,7 @@
         }
     }
 
-    string targetLanguage = "fr";
+    string targetLanguage = Environment.GetEnvironmentVariable("TARGET_LANGUAGE");
     string sourceLanguage = null; // automatically detected
     var client = Google.Cloud.Translation.V2.TranslationClient.Create();
 
@@ -35,7 +35,7 @@
                 if (@col1[((i * 4) + i1)] != null)
                 {
                     <div class="card col-md-3">
-                        <img class="col-md-6 img-fluid" style="margin-left : auto; margin-right : auto;" src="@col1[((i * 4) + i1)].Poster" alt="Card image cap">
+                        <img class="col-md-6 img-fluid" style="margin-left : auto; margin-right : auto;" src="@col1[((i * 4) + i1)].Poster" alt="Card image cap" onerror="this.onerror=null;this.src='https://us.123rf.com/450wm/pavelstasevich/pavelstasevich1811/pavelstasevich181101065/112815953-stock-vector-no-image-available-icon-flat-vector.jpg?ver=6';">
                         <div class="card-footer" style="margin-top : 4px">
                             <p class="card-text"><span class="notranslate">@System.Web.HttpUtility.HtmlDecode(@client.TranslateHtml(@col1[((i * 4) + i1)].Title, targetLanguage, sourceLanguage).TranslatedText)</span></p>
                             <form method="post">
