@@ -45,7 +45,9 @@ namespace movieGEN
             string s = env.ContentRootPath;
             string credential_path = s + "\\moviegen-3d5027810646.json";
             Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", credential_path);
-            Environment.SetEnvironmentVariable("TARGET_LANGUAGE", "fr");
+            Environment.SetEnvironmentVariable("TARGET_LANGUAGE", System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName);
+            Environment.SetEnvironmentVariable("OMDBKEY", "c8f45984");
+            app.UseRequestLocalization();
             app.UseStaticFiles();
             app.UseHttpsRedirection();
             

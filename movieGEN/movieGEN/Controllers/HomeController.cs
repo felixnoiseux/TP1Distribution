@@ -18,6 +18,8 @@ namespace movieGEN.Controllers
     public class HomeController : Controller
     {
         private List<ImdbEntity> lstObj = new List<ImdbEntity>();
+        private string OMDBKey = Environment.GetEnvironmentVariable("OMDBKEY");
+
         // GET: Home
         [Route("Home/Index")]
         public IActionResult Index(string search = "", int page = 1)
@@ -36,7 +38,7 @@ namespace movieGEN.Controllers
             }
             else
             {
-                string url = "http://www.omdbapi.com/?apikey=c8f45984&s=" + search + "&page=" + page; 
+                string url = "http://www.omdbapi.com/?apikey="+OMDBKey+"&s=" + search + "&page=" + page; 
                 using (WebClient wc = new WebClient())
                 {
                     var json = wc.DownloadString(url); //Télécharge le Json retourné par la recherche
@@ -91,7 +93,6 @@ namespace movieGEN.Controllers
         public void ChangeLangage(string langage) 
         {
             Environment.SetEnvironmentVariable("TARGET_LANGUAGE", langage);
-            
         }
         public IActionResult About()
         {
@@ -168,7 +169,7 @@ namespace movieGEN.Controllers
         public IActionResult Details(string imdbID)
         {
             ImdbEntity imdb = new ImdbEntity();
-            string url = "http://www.omdbapi.com/?apikey=c8f45984&i=" + imdbID;
+            string url = "http://www.omdbapi.com/?apikey="+OMDBKey+"&i=" + imdbID;
             using (WebClient wc = new WebClient())
             {
                 var json = wc.DownloadString(url);
@@ -217,16 +218,16 @@ namespace movieGEN.Controllers
             ImdbEntity obj = new ImdbEntity();
             List<string> URL = new List<string>() // Liste de film sur la page de départ par défaut
             {
-                "http://www.omdbapi.com/?apikey=c8f45984&t=captain&page=1",
-                "http://www.omdbapi.com/?apikey=c8f45984&t=Marvel&page=1",
-                "http://www.omdbapi.com/?apikey=c8f45984&t=iron&page=1",
-                "http://www.omdbapi.com/?apikey=c8f45984&t=Sword%20Art%20Online&page=1",
-                "http://www.omdbapi.com/?apikey=c8f45984&t=The%20Fugitive&page=1",
-                "http://www.omdbapi.com/?apikey=c8f45984&t=Fast%20&%20Furious%206&page=1",
-                "http://www.omdbapi.com/?apikey=c8f45984&t=Blindspot&page=1",
-                "http://www.omdbapi.com/?apikey=c8f45984&t=Home%20Alone&page=1",
-                "http://www.omdbapi.com/?apikey=c8f45984&t=Bourne&page=1",
-                "http://www.omdbapi.com/?apikey=c8f45984&t=avengers&page=1"
+                "http://www.omdbapi.com/?apikey="+OMDBKey+"&t=captain&page=1",
+                "http://www.omdbapi.com/?apikey="+OMDBKey+"&t=Marvel&page=1",
+                "http://www.omdbapi.com/?apikey="+OMDBKey+"&t=iron&page=1",
+                "http://www.omdbapi.com/?apikey="+OMDBKey+"&t=Sword%20Art%20Online&page=1",
+                "http://www.omdbapi.com/?apikey="+OMDBKey+"&t=The%20Fugitive&page=1",
+                "http://www.omdbapi.com/?apikey="+OMDBKey+"&t=Fast%20&%20Furious%206&page=1",
+                "http://www.omdbapi.com/?apikey="+OMDBKey+"&t=Blindspot&page=1",
+                "http://www.omdbapi.com/?apikey="+OMDBKey+"&t=Home%20Alone&page=1",
+                "http://www.omdbapi.com/?apikey="+OMDBKey+"&t=Bourne&page=1",
+                "http://www.omdbapi.com/?apikey="+OMDBKey+"&t=avengers&page=1"
             };
 
             foreach (var url in URL)

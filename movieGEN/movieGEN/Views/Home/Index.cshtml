@@ -48,17 +48,18 @@
         </div>
         <br>
     }
-    <div class="container row col-md-12">
+    <div class="container row col-md-12 center">
         @if (ViewData["PreviousPage"] != null)
         {
-            <a asp-controller="Home" asp-action="Index" asp-route-search=@ViewData["search"] asp-route-page=@ViewData["PreviousPage"]>
+            <a style="margin-right:1em" asp-controller="Home" asp-action="Index" asp-route-search=@ViewData["search"] asp-route-page=@ViewData["PreviousPage"]>
                 @System.Web.HttpUtility.HtmlDecode(client.TranslateHtml("Précédent", targetLanguage, sourceLanguage).TranslatedText)
             </a>
         }
         <p>@ViewData["ActualPage"]</p>
         @if (ViewData["NextPage"] != null)
         {
-            <a asp-controller="Home" asp-action="Index" asp-route-search=@ViewData["search"] asp-route-page=@ViewData["NextPage"]>
+            <a style="margin-left:1em" asp-controller="Home" asp-action="Index" asp-route-search=@ViewData["search"] asp-route-page=@ViewData["NextPage"]>
+                
                 @System.Web.HttpUtility.HtmlDecode(client.TranslateHtml("Suivant", targetLanguage, sourceLanguage).TranslatedText)
             </a>
         }

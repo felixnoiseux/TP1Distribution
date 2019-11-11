@@ -1,11 +1,11 @@
 ﻿<!DOCTYPE html>
 @{
-    @using movieGEN.Controllers;
     string targetLanguage = Environment.GetEnvironmentVariable("TARGET_LANGUAGE");
     string sourceLanguage = null; // automatically detected
     var client = Google.Cloud.Translation.V2.TranslationClient.Create();
-    var currentLanguage = client.ListLanguages(target: "fr").Where(l => l.Code == targetLanguage).Select(s => s.Name).FirstOrDefault();
     var choseLangage = targetLanguage;
+    var myLanguage = System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName;
+    var currentLanguage = client.ListLanguages(target: myLanguage).Where(l => l.Code == targetLanguage).Select(s => s.Name).FirstOrDefault();
 }
 <html>
 <head>
@@ -49,7 +49,7 @@
             <a class="rounded float-right col-md-2" asp-controller="Home" asp-action="About">@System.Web.HttpUtility.HtmlDecode(client.TranslateHtml("À propos", targetLanguage, sourceLanguage).TranslatedText)</a>
             <select id="lan" name="language" class="rounded float-right col-md-2 select" onchange="getval(this);">
                 <option value="" selected disabled hidden>@currentLanguage</option>
-                @foreach (var item in client.ListLanguages(target: targetLanguage))
+                @foreach (var item in client.ListLanguages(target: myLanguage))
                 {
                     <option id="lan" value="@item.Code">@item.Name</option>
                 }

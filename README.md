@@ -23,10 +23,11 @@ Git pour le projet "SiteWeb de Film" pour le TP1 de Distribution.
 	Vous avez votre clé!
 
 	d)Google traduction(Cloud Translation API):On peut obtenir cette clé sur https://console.developers.google.com/ dans la bibliothèque.
-	Une fois l'API activé allez dans gérer, clicker sur votre compte de service(si vous n'en avez pas faite en un), aller dans clé et "Créer une clé",
-	prenez le format JSON et créer-là. Gardez le fichier téléchargé.
+	Une fois l'API activé allez dans gérer, clicker sur votre compte de service(si vous n'en avez pas faites en un), aller dans clé et "Créer une clé",
+	prenez le format JSON et créer-là(sur la page des compte de service, si vous en avez un: https://console.cloud.google.com/iam-admin/serviceaccounts/). 
+	Gardez le fichier téléchargé.
 	Attention, il faut payer pour avoir cette API et la clé(6 mois gratuit), il faut activé la facturation et prendre un compte gratuit pour
-	ceux qui ne veulent pas payé.
+	ceux qui ne veulent pas payé. Pour plus d'information allez sur:https://cloud.google.com/translate/docs/basic/setup-basic
 
 4. Ouvrez le projet.
 	a)Pour OMDB movie, allez dans le HomeController, à la ligne 39, 165,214-223, la clé dans les liens devra être changé par votre clé(?apikey="APIKEY"&t...).
